@@ -1,23 +1,19 @@
 package sample.ui.addbook;
 
-import com.sun.glass.ui.Window;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import sample.database.DatabaseHandler;
-import java.io.IOException;
+
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AddBookController implements Initializable {
     @FXML
@@ -29,17 +25,17 @@ public class AddBookController implements Initializable {
     @FXML
     private TextField bookPublisher;
     @FXML
-    private Button addButton;
-    @FXML
-    private Button cancelButton;
-    @FXML
     private AnchorPane rootPane;
+    @FXML
+    private ChoiceBox<String> bookType;
 
-    DatabaseHandler databaseHandler;
+    DatabaseHandler handler;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        databaseHandler = new DatabaseHandler();
+        handler = DatabaseHandler.getInstance();
+        bookType.getItems().addAll("Literature", "Science", "Journal");
+        bookType.setValue("Literature");
     }
 
 
@@ -48,8 +44,9 @@ public class AddBookController implements Initializable {
         String name = bookName.getText();
         String author = bookAuthor.getText();
         String publisher = bookPublisher.getText();
+        String type = bookType.getValue();
 
-        if(ISBN.isEmpty() || name.isEmpty() || author.isEmpty() || publisher.isEmpty()){
+        if(ISBN.isEmpty() || name.isEmpty() || author.isEmpty() || publisher.isEmpty() || type.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
             alert.setTitle("Why are you doing this to me?");
@@ -58,20 +55,40 @@ public class AddBookController implements Initializable {
             return;
         }
 
+        String q = "SELECT ISBN FROM book";
+        ResultSet r = handler.execQuery(q);
+        try{
+            while (r.next()){
+                String DBISBN = r.getString("ISBN");
+                if (DBISBN.toLowerCase().equals(ISBN.toLowerCase())){
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Error");
+                    alert.setContentText("Such a book already exists!");
+                    alert.showAndWait();
+                    return;
+                }
+            }
+        }catch (SQLException ex){
+            Logger.getLogger(AddBookController.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+
         String qu = "INSERT INTO book VALUES(" +
                 "'" + ISBN + "'," +
                 "'" + name + "'," +
                 "'" + author + "'," +
                 "'" + publisher + "'," +
-                "" + true + "" +
+                "'" + type + "'" +
                 ")";
-        System.out.println(qu);
-        if(databaseHandler.execAction(qu)){
+
+        if(handler.execAction(qu)){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
             alert.setTitle("Good job, boss!");
             alert.setContentText("Book has been added!");
             alert.showAndWait();
+
         } else //Error
         {
             Alert alert = new Alert(Alert.AlertType.ERROR);
