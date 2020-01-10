@@ -16,6 +16,8 @@ import sample.classes.Book;
 import sample.classes.User;
 import sample.database.DatabaseHandler;
 import sample.ui.addbook.AddBookController;
+import sample.ui.catalogue.CatalogueController;
+
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +25,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OwnbookController implements Initializable {
+public class OwnbookController extends CatalogueController implements Initializable {
 
     ObservableList<Book> list = FXCollections.observableArrayList();
 
