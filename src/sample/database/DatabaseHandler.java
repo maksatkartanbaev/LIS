@@ -9,7 +9,6 @@ public class DatabaseHandler {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/test";
     private static final String USERNAME = "striker";
     private static final String PASSWORD = "eredivise";
-    private static String username = "java";
     private static Connection conn = null;
     private static Statement stmt = null;
 
@@ -31,16 +30,6 @@ public class DatabaseHandler {
             System.out.println("Connected");
         } catch (Exception e){
             System.out.println(e.getMessage() + "-------CreateConnection------");
-        }
-    }
-
-    public void closeConnection(){
-        System.out.println("Closing...");
-        try {
-            conn.close();
-            System.out.println("Closed");
-        } catch (Exception e){
-            System.out.println(e.getMessage() + "------CloseConnection-------");
         }
     }
 
