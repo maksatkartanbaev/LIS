@@ -104,7 +104,7 @@ public class CurrentbooksController implements Initializable {
             alert.setContentText("Book has been removed!");
             alert.showAndWait();
 
-        } else //Error
+        } else
         {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);

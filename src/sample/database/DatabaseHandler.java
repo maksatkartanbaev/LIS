@@ -7,8 +7,8 @@ public class DatabaseHandler {
     private static DatabaseHandler handler = null;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/test";
-    private static final String USERNAME = "striker";
-    private static final String PASSWORD = "eredivise";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "admin";
     private static Connection conn = null;
     private static Statement stmt = null;
 
